@@ -10,7 +10,8 @@
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "babel-jest": "^24.5.0",
-    "jest": "^24.5.0"
+    "jest": "^24.5.0",
+    "typescript": "~3.7.2"
   },
   "scripts": {
     "test": "jest"
