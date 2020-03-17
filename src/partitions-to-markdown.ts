@@ -5,11 +5,11 @@ import { PARTITION_TYPES } from './partition-types';
  * @param  {partition} partitions Array of partitions.
  * @return {string}
  */
-export function generateMarkdown(partitions) {
+export function generateMarkdown(partitions: object[]): string {  //@TODO: BETTER TYPE FOR PARTITIONS?
   return _generateMarkdownRecursiveOuter(partitions).trim();
 }
 
-function _generateMarkdownRecursiveOuter(partitions) {
+function _generateMarkdownRecursiveOuter(partitions): string {  //@TODO: PARAM TYPE?
   let markdownText = '';
   for (let i in partitions) {
     markdownText += _convertPartitionToMarkdownOuter(partitions[i]) + '\n\n';
@@ -17,7 +17,7 @@ function _generateMarkdownRecursiveOuter(partitions) {
   return markdownText;
 }
 
-function _generateMarkdownRecursiveInner(partitions) {
+function _generateMarkdownRecursiveInner(partitions: object[]): string {
   let markdownText = '';
   for (let i in partitions) {
     markdownText += _convertPartitionToMarkdownInner(partitions[i]);
@@ -25,7 +25,7 @@ function _generateMarkdownRecursiveInner(partitions) {
   return markdownText;
 }
 
-function _convertPartitionToMarkdownOuter(partition) {
+function _convertPartitionToMarkdownOuter(partition): string | undefined {  //@TODO: PARAM TYPE?
   let markdownText = '';
   switch (partition.type) {
     case PARTITION_TYPES.H6:
@@ -55,7 +55,7 @@ function _convertPartitionToMarkdownOuter(partition) {
   }
 }
 
-function _convertPartitionToMarkdownInner(partition) {
+function _convertPartitionToMarkdownInner(partition): string | undefined {  //@TODO: PARAM TYPE
   let markdownText = '';
   switch (partition.type) {
     case PARTITION_TYPES.TEXT:
@@ -73,7 +73,7 @@ function _convertPartitionToMarkdownInner(partition) {
   }
 }
 
-function _partitionCheckParseOrAdd(partition) {
+function _partitionCheckParseOrAdd(partition): string { //@TODO: PARAM TYPE
   let markdownText = '';
   if (partition.partitions) {
     return markdownText += _generateMarkdownRecursiveInner(partition.partitions);
@@ -81,7 +81,7 @@ function _partitionCheckParseOrAdd(partition) {
   return markdownText += _addEscapeCharacter(partition.value);
 }
 
-function _parseQuote(partition) {
+function _parseQuote(partition: object): string {
   let markdownText = _partitionCheckParseOrAdd(partition);
   if (markdownText.includes('\n')) {
     return '>>>\n' + markdownText + '\n>>>';
@@ -90,7 +90,7 @@ function _parseQuote(partition) {
   }
 }
 
-function _parseList(partitions, type) {
+function _parseList(partitions, type: string): string { //@TODO: PARAM TYPE
   let markdownText = '';
   for (let i in partitions) {
     if (type === PARTITION_TYPES.UNORDERED_LIST) {
@@ -102,7 +102,7 @@ function _parseList(partitions, type) {
   return markdownText;
 }
 
-function _addEscapeCharacter(value) {
+function _addEscapeCharacter(value: string): string {
   value = value.replace(/[*]/g, '\\*');
   value = value.replace(/[_]/g, '\\_');
   value = value.replace(/^[>]/g, '\\>');

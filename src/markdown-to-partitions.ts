@@ -6,10 +6,10 @@ import { generateInnerPartitions } from './markdown-to-inner-partitions';
  * @param   {string}    markdownText User markdown.
  * @returns {partition}
  */
-export function generatePartitions(markdownText) {
+export function generatePartitions(markdownText: string): object {
   markdownText = _conformWhiteSpace(markdownText);
-  let partition;
-  let partitions = [];
+  let partition: object;  //@TODO: BETTER OPTION?
+  let partitions: object[] = []; //@TODO: BETTER OPTION?
   let markdownSplits = _splitAtOuterBreakPoints(markdownText.trim());
   for (let markdownSubstring of markdownSplits) {
     partition = _parseOuterPartition(markdownSubstring);
@@ -18,7 +18,7 @@ export function generatePartitions(markdownText) {
   return partitions;
 }
 
-function _parseOuterPartition(markdownSubstring) {
+function _parseOuterPartition(markdownSubstring: string): object {
   if ((markdownSubstring.startsWith('#')) && (markdownSubstring.charAt(markdownSubstring.lastIndexOf('#') + 1) === ' ')) {
     return _buildHeaderPartition(markdownSubstring);
   } else if (markdownSubstring.startsWith('* ')) {
@@ -36,15 +36,15 @@ function _parseOuterPartition(markdownSubstring) {
   }
 }
 
-function _buildHeaderPartition(markdownSubstring) {
+function _buildHeaderPartition(markdownSubstring: string): object { //@TODO: BETTER RETURN OPTION?
   let size = markdownSubstring.lastIndexOf('#') + 1;
   let type = _getHeaderPartitionType(size);
   let value = _removeEscapedDelimiter(markdownSubstring.substring(size).trim());
   return { type, value };
 }
 
-const headerSizeMap = {
-  1: PARTITION_TYPES.H1,
+const headerSizeMap = { //@TODO: enum??
+  1: PARTITION_TYPES.H1,  //@TODO: NEED TYPES?
   2: PARTITION_TYPES.H2,
   3: PARTITION_TYPES.H3,
   4: PARTITION_TYPES.H4,
@@ -52,35 +52,35 @@ const headerSizeMap = {
   6: PARTITION_TYPES.H6
 };
 
-function _getHeaderPartitionType(size) {
+function _getHeaderPartitionType(size: number): string {
   if (size < 1) {
     size = 1;
   } else if (size > 6) {
     size = 6;
   }
-  return headerSizeMap[size];
+  return headerSizeMap[size]; //@TODO: FIND FIX
 }
 
-function _buildUnorderedListPartition(markdownSubstring) {
+function _buildUnorderedListPartition(markdownSubstring: string): object {
   let items = _makeListItems(markdownSubstring);
   return { type: PARTITION_TYPES.UNORDERED_LIST, items };
 }
 
-function _buildOrderedListPartition(markdownSubstring) {
+function _buildOrderedListPartition(markdownSubstring: string): object {
   let items = _makeListItems(markdownSubstring);
   return { type: PARTITION_TYPES.ORDERED_LIST, items };
 }
 
-function _makeListItems(markdownSubstring) {
+function _makeListItems(markdownSubstring: string): object {
   let items = [];
   let listItems = markdownSubstring.split('\n');
-  let value;
-  let itemObject;
+  let value: string;
+  let itemObject //@TODO: TYPE?
   for (let item of listItems) {
     value = item.substring(1).trim();
     itemObject = generateInnerPartitions(value);
     if (itemObject) {
-      items.push(...itemObject);
+      items.push(...itemObject);  //@TODO: NOT AN ARRAY, BUT WORKING?
     } else {
       items.push({ type: PARTITION_TYPES.TEXT, value });
     }
@@ -89,8 +89,8 @@ function _makeListItems(markdownSubstring) {
   return items;
 }
 
-function _buildQuotePartition(markdownSubstring) {
-  let value;
+function _buildQuotePartition(markdownSubstring: string): object {
+  let value: string;
   if (markdownSubstring.startsWith('>>>')) {
     value = markdownSubstring.substring(3, markdownSubstring.length - 3).trim();
   } else {
@@ -105,9 +105,9 @@ function _buildQuotePartition(markdownSubstring) {
   }
 }
 
-function _buildImagePartition(markdownSubstring) {
+function _buildImagePartition(markdownSubstring: string): object {
   let breakIndex = markdownSubstring.indexOf(']');
-  let altText =  _removeEscapedDelimiter(markdownSubstring.substring(2, breakIndex));
+  let altText: string | null =  _removeEscapedDelimiter(markdownSubstring.substring(2, breakIndex)); //@TODO: CORRECT?
   if (altText === '') {
     altText = null;
   }
@@ -115,11 +115,11 @@ function _buildImagePartition(markdownSubstring) {
   return { type: PARTITION_TYPES.IMAGE, altText, link };
 }
 
-function _buildHrPartition() {
+function _buildHrPartition(): object {
   return { type: PARTITION_TYPES.HR };
 }
 
-function _buildParagraphPartition(markdownSubstring) {
+function _buildParagraphPartition(markdownSubstring: string): object {
   let partitions = generateInnerPartitions(markdownSubstring);
   if (!partitions) {
     partitions = [{ type: PARTITION_TYPES.TEXT, value: _removeEscapedDelimiter(markdownSubstring) }];
@@ -127,8 +127,8 @@ function _buildParagraphPartition(markdownSubstring) {
   return { type: PARTITION_TYPES.PARAGRAPH, partitions };
 }
 
-function _splitAtOuterBreakPoints(markdownText) {
-  let markdownSplits = [];
+function _splitAtOuterBreakPoints(markdownText: string): string[] {
+  let markdownSplits: string[] = [];  //@TODO: :string[] NEEDED?
   let lastBreakPoint = 0;
   let index = markdownText.indexOf('\n', lastBreakPoint);
   while (index !== -1) {
@@ -146,7 +146,7 @@ function _splitAtOuterBreakPoints(markdownText) {
   return markdownSplits;
 }
 
-function _findOuterBreakPoint(lastBreakPoint, index, markdownText) {
+function _findOuterBreakPoint(lastBreakPoint: number, index: number, markdownText: string): number {
   if (index === -1) {
     return index;
   }
@@ -174,9 +174,7 @@ function _findOuterBreakPoint(lastBreakPoint, index, markdownText) {
   }
 }
 
-function _removeEscapedDelimiter(markdownSubstring) {
-  // @TODO: remove old
-  // return markdownSubstring.replace(/\\/g, '');
+function _removeEscapedDelimiter(markdownSubstring: string): string {
   markdownSubstring = markdownSubstring.replace(/(\\+[*])/g, '*');
   markdownSubstring = markdownSubstring.replace(/(\\+[_])/g, '_');
   markdownSubstring = markdownSubstring.replace(/(\\+[>])/g, '>');
@@ -185,7 +183,7 @@ function _removeEscapedDelimiter(markdownSubstring) {
   return markdownSubstring;
 }
 
-function _conformWhiteSpace(markdownText) {
+function _conformWhiteSpace(markdownText: string): string {
   markdownText = markdownText.replace(/( ){2,}/g, ' ');
   markdownText = markdownText.replace(/(\n+\s*\n*)/g, '\n');
   return markdownText;

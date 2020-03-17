@@ -1,6 +1,6 @@
 import { PARTITION_TYPES } from './partition-types';
 
-export function generateInnerPartitions(markdownSubstring) {
+export function generateInnerPartitions(markdownSubstring: string): object | null {
   if (markdownSubstring.length === 0) {
     return null;
   }
@@ -10,7 +10,7 @@ export function generateInnerPartitions(markdownSubstring) {
   if (nextIndex === markdownSubstring.length) {
     return null;
   }
-  let currentChar, close;
+  let currentChar: string, close: number;
   while (nextIndex < markdownSubstring.length) {
     if (nextIndex !== currentIndex) {
       partitions.push(_buildTextPartition(markdownSubstring.substring(currentIndex, nextIndex)));
@@ -34,7 +34,7 @@ export function generateInnerPartitions(markdownSubstring) {
         close = markdownSubstring.indexOf(')', currentIndex);
         partitions.push(_buildRelationOrColorPartition(markdownSubstring.substring(currentIndex, close + 1)));
       }
-      currentIndex = close + 1;
+      currentIndex = close + 1; //@TODO: FIND FIX
     }
     nextIndex = _findNextInnerStart(currentIndex, markdownSubstring);
   }
@@ -44,8 +44,8 @@ export function generateInnerPartitions(markdownSubstring) {
   return partitions;
 }
 
-function _buildBoldPartition(markdownSubstring) {
-  let partitions = generateInnerPartitions(markdownSubstring);
+function _buildBoldPartition(markdownSubstring: string): object {
+  let partitions = generateInnerPartitions(markdownSubstring);  //@TODO: NEED TYPE? (see line 57)
   if (!partitions) {
     return { type: PARTITION_TYPES.BOLD, value: markdownSubstring.replace(/\\/g, '') };
   } else {
@@ -53,8 +53,8 @@ function _buildBoldPartition(markdownSubstring) {
   }
 }
 
-function _buildItalicsPartition(markdownSubstring) {
-  let partitions = generateInnerPartitions(markdownSubstring);
+function _buildItalicsPartition(markdownSubstring: string): object {
+  let partitions: object | null = generateInnerPartitions(markdownSubstring);  //@TODO: BETTER OPTION?
   if (!partitions) {
     return { type: PARTITION_TYPES.ITALICS, value: markdownSubstring.replace(/\\/g, '') };
   } else {
@@ -62,12 +62,12 @@ function _buildItalicsPartition(markdownSubstring) {
   }
 }
 
-function _buildLinkPartition(markdownSubstring) {
+function _buildLinkPartition(markdownSubstring: string): object {
   let breaks = _breakLinkRelationColor(']', markdownSubstring.replace(/\\/g, ''));
   return { type: PARTITION_TYPES.LINK, value: breaks[0], link: breaks[1] };
 }
 
-function _buildRelationOrColorPartition(markdownSubstring) {
+function _buildRelationOrColorPartition(markdownSubstring: string): object {
   let breaks = _breakLinkRelationColor('}', markdownSubstring.replace(/\\/g, ''));
   if (breaks[2] !== true) {
     return _buildRelationPartition(breaks);
@@ -76,19 +76,19 @@ function _buildRelationOrColorPartition(markdownSubstring) {
   }
 }
 
-function _buildRelationPartition(breaks) {
+function _buildRelationPartition(breaks): object { //@TODO: PARAM TYPE?
   return { type: PARTITION_TYPES.RELATION, value: breaks[0], relation: breaks[1] };
 }
 
-function _buildColorPartition(breaks) {
+function _buildColorPartition(breaks): object { //@TODO: PARAM TYPE?
   return { type: PARTITION_TYPES.COLOR, value: breaks[0], color: breaks[1] };
 }
 
-function _buildTextPartition(markdownSubstring) {
+function _buildTextPartition(markdownSubstring: string): object {
   return { type: PARTITION_TYPES.TEXT, value: markdownSubstring.replace(/\\/g, '') };
 }
 
-function _findNextInnerStart(index, markdownSubstring) {
+function _findNextInnerStart(index: number, markdownSubstring: string): number {
   if (index >= markdownSubstring.length) {
     return markdownSubstring.length;
   }
@@ -97,7 +97,7 @@ function _findNextInnerStart(index, markdownSubstring) {
   let linkIndex = _findNextValidLinkRelCol('[', index, markdownSubstring);
   let relColIndex = _findNextValidLinkRelCol('{', index, markdownSubstring);
   let smallestArr = [markdownSubstring.length];
-  let close;
+  let close: number;  //@TODO: NEED :number??
   if (boldIndex >= 0) {
     close = _findNextValidChar('*', boldIndex + 1, markdownSubstring);
     if (close >= 0) {
@@ -125,7 +125,7 @@ function _findNextInnerStart(index, markdownSubstring) {
   return Math.min(...smallestArr);
 }
 
-function _findNextValidChar(keyChar, index, markdownSubstring) {
+function _findNextValidChar(keyChar: string, index: number, markdownSubstring: string): number {
   let charIndex = markdownSubstring.indexOf(keyChar, index);
   if (keyChar === '*' || keyChar === '_') {
     while (charIndex >= 0) {
@@ -147,7 +147,7 @@ function _findNextValidChar(keyChar, index, markdownSubstring) {
   return charIndex;
 }
 
-function _breakLinkRelationColor(breakChar, markdownSubstring) {
+function _breakLinkRelationColor(breakChar: string, markdownSubstring: string): [string, string, boolean] {
   let breakPoint = markdownSubstring.indexOf(breakChar);
   let isColor = false;
   if (breakChar === '}') {
@@ -158,25 +158,25 @@ function _breakLinkRelationColor(breakChar, markdownSubstring) {
   return [ first, second, isColor ];
 }
 
-function _inLinkRelationColor(index, markdownSubstring) {
+function _inLinkRelationColor(index: number, markdownSubstring: string): boolean {
   let inLink = _inLink(index, markdownSubstring);
   let inRelCol = _inRelationColor(index, markdownSubstring) 
   return inLink || inRelCol;
 } 
 
-function _inLink(index, markdownSubstring) {
+function _inLink(index: number, markdownSubstring: string): boolean {
   let open = markdownSubstring.lastIndexOf('[', index);
   let mid = markdownSubstring.indexOf('](', open);
   return _inRange(index, open, mid, markdownSubstring);
 }
 
-function _inRelationColor(index, markdownSubstring) {
+function _inRelationColor(index: number, markdownSubstring: string): boolean {
   let open = markdownSubstring.lastIndexOf('{', index);
   let mid = markdownSubstring.indexOf('}(', open);
   return _inRange(index, open, mid, markdownSubstring);
 }
 
-function _inRange(index, open, mid, markdownSubstring) {
+function _inRange(index: number, open: number, mid: number, markdownSubstring: string): boolean {
   let close = markdownSubstring.indexOf(')', mid);
   let endLine = markdownSubstring.indexOf('\n', index);
   if (open > 0 && mid > 0 && close > 0) {
@@ -189,9 +189,9 @@ function _inRange(index, open, mid, markdownSubstring) {
   return false;
 }
 
-function _findNextValidLinkRelCol (openChar, index, markdownSubstring) {
+function _findNextValidLinkRelCol (openChar: string, index: number, markdownSubstring: string): number {
   let open = _findNextValidChar(openChar, index, markdownSubstring);
-  let midChar;
+  let midChar: string;  //@TODO: NEED :string??
   if (openChar === '[') {
     midChar = '](';
   } else {

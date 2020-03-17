@@ -1,4 +1,4 @@
-import { generateMarkdown } from './partitions-to-markdown';
+import { generateMarkdown } from '../partitions-to-markdown';
 
 let testCases = [
   {

@@ -1,4 +1,4 @@
-import { generateInnerPartitions } from './markdown-to-inner-partitions';
+import { generateInnerPartitions } from '../markdown-to-inner-partitions';
 
 let testCases = [
   {
