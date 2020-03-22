@@ -1,4 +1,4 @@
-export enum PageDetailPartitionType {
+export enum PatritionType {
   Header1 = 'h1',
   Header2 = 'h2',
   Header3 = 'h3',
@@ -19,12 +19,12 @@ export enum PageDetailPartitionType {
   Quoteblock = 'quotes',
 }
 
-export class PageDetailPartition {
-  type: PageDetailPartitionType;
+export class Partition {
+  type: PatritionType;
   private _value?: string;
-  private _partitions?: PageDetailPartition[]; 
+  private _partitions?: Partition[]; 
 
-  constructor(type: PageDetailPartitionType) {
+  constructor(type: PatritionType) {
     this.type = type;
   }
 
@@ -35,7 +35,7 @@ export class PageDetailPartition {
     this._value = value;
   }
 
-  set partitions(partitions: PageDetailPartition[]) {
+  set partitions(partitions: Partition[]) {
     if (this.hasValue) {
       throw new Error(`cannot have both value and partitions set`);
     }
@@ -49,7 +49,7 @@ export class PageDetailPartition {
     return this._value;
   }
 
-  get partitions():PageDetailPartition[] {
+  get partitions():Partition[] {
     if (this._partitions === undefined) {
       throw new Error(`partitions is not set`);
     }
@@ -64,11 +64,11 @@ export class PageDetailPartition {
     return this._value !== undefined;
   }
 
-  copy():PageDetailPartition {
+  copy():Partition {
     throw new Error(`cannot copy base class`);
   }
 
-  protected setCopyProperties(copyPartition: PageDetailPartition):PageDetailPartition {
+  protected setCopyProperties(copyPartition: Partition):Partition {
     if (this.hasPartitions) {
       copyPartition.partitions = this.partitions;
     }
@@ -96,7 +96,7 @@ export class PageDetailPartition {
     };
   }
 
-  protected jsonPartitions(partitions: PageDetailPartition[]):any[] {
+  protected jsonPartitions(partitions: Partition[]):any[] {
     const partitionsData = [];
     for (const partition of partitions) {
       partitionsData.push(partition.json());
@@ -105,134 +105,134 @@ export class PageDetailPartition {
   }
 }
 
-class PageDetailPartitionHeader extends PageDetailPartition {
-  constructor(type: PageDetailPartitionType, value: string) {
+class PartitionHeader extends Partition {
+  constructor(type: PatritionType, value: string) {
     super(type);
     this.value = value;
   }
 }
 
-export class PageDetailPartitionHeader1 extends PageDetailPartitionHeader {
+export class PartitionHeader1 extends PartitionHeader {
   constructor(value: string) {
-    super(PageDetailPartitionType.Header1, value);
+    super(PatritionType.Header1, value);
   }
 
-  copy():PageDetailPartitionHeader1 {
-    return new PageDetailPartitionHeader1(this.value);
+  copy():PartitionHeader1 {
+    return new PartitionHeader1(this.value);
   }
 }
 
-export class PageDetailPartitionHeader2 extends PageDetailPartitionHeader {
+export class PartitionHeader2 extends PartitionHeader {
   constructor(value: string) {
-    super(PageDetailPartitionType.Header2, value);
+    super(PatritionType.Header2, value);
   }
 
-  copy():PageDetailPartitionHeader2 {
-    return new PageDetailPartitionHeader2(this.value);
+  copy():PartitionHeader2 {
+    return new PartitionHeader2(this.value);
   }
 }
 
-export class PageDetailPartitionHeader3 extends PageDetailPartitionHeader {
+export class PartitionHeader3 extends PartitionHeader {
   constructor(value: string) {
-    super(PageDetailPartitionType.Header3, value);
+    super(PatritionType.Header3, value);
   }
 
-  copy():PageDetailPartitionHeader3 {
-    return new PageDetailPartitionHeader3(this.value);
+  copy():PartitionHeader3 {
+    return new PartitionHeader3(this.value);
   }
 }
 
-export class PageDetailPartitionHeader4 extends PageDetailPartitionHeader {
+export class PartitionHeader4 extends PartitionHeader {
   constructor(value: string) {
-    super(PageDetailPartitionType.Header4, value);
+    super(PatritionType.Header4, value);
   }
 
-  copy():PageDetailPartitionHeader4 {
-    return new PageDetailPartitionHeader4(this.value);
+  copy():PartitionHeader4 {
+    return new PartitionHeader4(this.value);
   }
 }
 
-export class PageDetailPartitionHeader5 extends PageDetailPartitionHeader {
+export class PartitionHeader5 extends PartitionHeader {
   constructor(value: string) {
-    super(PageDetailPartitionType.Header5, value);
+    super(PatritionType.Header5, value);
   }
 
-  copy():PageDetailPartitionHeader5 {
-    return new PageDetailPartitionHeader5(this.value);
+  copy():PartitionHeader5 {
+    return new PartitionHeader5(this.value);
   }
 }
 
-export class PageDetailPartitionHeader6 extends PageDetailPartitionHeader {
+export class PartitionHeader6 extends PartitionHeader {
   constructor(value: string) {
-    super(PageDetailPartitionType.Header6, value);
+    super(PatritionType.Header6, value);
   }
 
-  copy():PageDetailPartitionHeader6 {
-    return new PageDetailPartitionHeader6(this.value);
+  copy():PartitionHeader6 {
+    return new PartitionHeader6(this.value);
   }
 }
 
-export class PageDetailPartitionParagraph extends PageDetailPartition {
+export class PartitionParagraph extends Partition {
   constructor() {
-    super(PageDetailPartitionType.Paragraph);
+    super(PatritionType.Paragraph);
   }
 
-  copy():PageDetailPartitionParagraph {
-    return this.setCopyProperties(new PageDetailPartitionParagraph());
+  copy():PartitionParagraph {
+    return this.setCopyProperties(new PartitionParagraph());
   }
 }
 
-export class PageDetailPartitionText extends PageDetailPartition {
+export class PartitionText extends Partition {
   constructor() {
-    super(PageDetailPartitionType.Text);
+    super(PatritionType.Text);
   }
 
-  copy():PageDetailPartitionText {
-    return this.setCopyProperties(new PageDetailPartitionText());
+  copy():PartitionText {
+    return this.setCopyProperties(new PartitionText());
   }
 }
 
-export class PageDetailPartitionBold extends PageDetailPartition {
+export class PartitionBold extends Partition {
   constructor() {
-    super(PageDetailPartitionType.Bold);
+    super(PatritionType.Bold);
   }
 
-  copy():PageDetailPartitionParagraph {
-    return this.setCopyProperties(new PageDetailPartitionParagraph());
+  copy():PartitionParagraph {
+    return this.setCopyProperties(new PartitionParagraph());
   }
 }
 
-export class PageDetailPartitionItalics extends PageDetailPartition {
+export class PartitionItalics extends Partition {
   constructor() {
-    super(PageDetailPartitionType.Italics);
+    super(PatritionType.Italics);
   }
 
-  copy():PageDetailPartitionItalics {
-    return this.setCopyProperties(new PageDetailPartitionItalics());
+  copy():PartitionItalics {
+    return this.setCopyProperties(new PartitionItalics());
   }
 }
 
-export class PageDetailPartitionQuoteblock extends PageDetailPartition {
+export class PartitionQuoteblock extends Partition {
   constructor() {
-    super(PageDetailPartitionType.Quoteblock);
+    super(PatritionType.Quoteblock);
   }
 
-  copy():PageDetailPartitionQuoteblock {
-    return this.setCopyProperties(new PageDetailPartitionQuoteblock());
+  copy():PartitionQuoteblock {
+    return this.setCopyProperties(new PartitionQuoteblock());
   }
 }
 
-export class PageDetailPartitionLink extends PageDetailPartition {
+export class PartitionLink extends Partition {
   link: string;
 
   constructor(value: string, link: string) {
-    super(PageDetailPartitionType.Link);
+    super(PatritionType.Link);
     this.value = value;
     this.link = link;
   }
 
-  copy():PageDetailPartitionLink {
-    return new PageDetailPartitionLink(this.value, this.link);
+  copy():PartitionLink {
+    return new PartitionLink(this.value, this.link);
   }
 
   json():any {
@@ -244,17 +244,17 @@ export class PageDetailPartitionLink extends PageDetailPartition {
   }
 }
 
-export class PageDetailPartitionRelation extends PageDetailPartition {
+export class PartitionRelation extends Partition {
   relation: string;
 
   constructor(value: string, relation: string) {
-    super(PageDetailPartitionType.Relation);
+    super(PatritionType.Relation);
     this.value = value;
     this.relation = relation;
   }
 
-  copy():PageDetailPartitionRelation {
-    return new PageDetailPartitionRelation(this.value, this.relation);
+  copy():PartitionRelation {
+    return new PartitionRelation(this.value, this.relation);
   }
 
   json():any {
@@ -266,17 +266,17 @@ export class PageDetailPartitionRelation extends PageDetailPartition {
   }
 }
 
-export class PageDetailPartitionColor extends PageDetailPartition {
+export class PartitionColor extends Partition {
   color: string;
 
   constructor(value: string, color: string) {
-    super(PageDetailPartitionType.Color);
+    super(PatritionType.Color);
     this.value = value;
     this.color = color;
   }
 
-  copy():PageDetailPartitionColor {
-    return new PageDetailPartitionColor(this.value, this.color);
+  copy():PartitionColor {
+    return new PartitionColor(this.value, this.color);
   }
 
   json():any {
@@ -288,10 +288,10 @@ export class PageDetailPartitionColor extends PageDetailPartition {
   }
 }
 
-class PageDetailPartitionList extends PageDetailPartition {
-  items: PageDetailPartition[];
+class PartitionList extends Partition {
+  items: Partition[];
 
-  constructor(type: PageDetailPartitionType, items: PageDetailPartition[]) {
+  constructor(type: PatritionType, items: Partition[]) {
     super(type);
     this.items = items;
   }
@@ -300,7 +300,7 @@ class PageDetailPartitionList extends PageDetailPartition {
     throw new Error(`cannot set value`);
   }
 
-  set partitions(partitions: PageDetailPartition[]) {
+  set partitions(partitions: Partition[]) {
     throw new Error(`cannot set partitions`);
   }
 
@@ -312,32 +312,32 @@ class PageDetailPartitionList extends PageDetailPartition {
   }
 }
 
-export class PageDetailPartitionUnorderedList extends PageDetailPartitionList {
-  constructor(items: PageDetailPartition[]) {
-    super(PageDetailPartitionType.UnorderedList, items);
+export class PartitionUnorderedList extends PartitionList {
+  constructor(items: Partition[]) {
+    super(PatritionType.UnorderedList, items);
   }
 
-  copy():PageDetailPartitionUnorderedList {
-    return new PageDetailPartitionUnorderedList(this.items);
-  }
-}
-
-export class PageDetailPartitionOrderedList extends PageDetailPartitionList {
-  constructor(items: PageDetailPartition[]) {
-    super(PageDetailPartitionType.OrderedList, items);
-  }
-
-  copy():PageDetailPartitionOrderedList {
-    return new PageDetailPartitionOrderedList(this.items);
+  copy():PartitionUnorderedList {
+    return new PartitionUnorderedList(this.items);
   }
 }
 
-export class PageDetailPartitionImage extends PageDetailPartition {
+export class PartitionOrderedList extends PartitionList {
+  constructor(items: Partition[]) {
+    super(PatritionType.OrderedList, items);
+  }
+
+  copy():PartitionOrderedList {
+    return new PartitionOrderedList(this.items);
+  }
+}
+
+export class PartitionImage extends Partition {
   altText: string;
   link: string;
 
   constructor(altText: string, link: string) {
-    super(PageDetailPartitionType.Image);
+    super(PatritionType.Image);
     this.altText = altText;
     this.link = link;
   }
@@ -346,12 +346,12 @@ export class PageDetailPartitionImage extends PageDetailPartition {
     throw new Error(`cannot set value`);
   }
 
-  set partitions(partitions: PageDetailPartition[]) {
+  set partitions(partitions: Partition[]) {
     throw new Error(`cannot set partitions`);
   }
 
-  copy():PageDetailPartitionImage {
-    return new PageDetailPartitionImage(this.altText, this.link);
+  copy():PartitionImage {
+    return new PartitionImage(this.altText, this.link);
   }
 
   json():any {
@@ -363,21 +363,21 @@ export class PageDetailPartitionImage extends PageDetailPartition {
   }
 }
 
-export class PageDetailPartitionPageBreak extends PageDetailPartition {
+export class PartitionPageBreak extends Partition {
   constructor() {
-    super(PageDetailPartitionType.PageBreak);
+    super(PatritionType.PageBreak);
   }
 
   set value(value: string) {
     throw new Error(`cannot set value`);
   }
 
-  set partitions(partitions: PageDetailPartition[]) {
+  set partitions(partitions: Partition[]) {
     throw new Error(`cannot set partitions`);
   }
 
-  copy():PageDetailPartitionPageBreak {
-    return new PageDetailPartitionPageBreak();
+  copy():PartitionPageBreak {
+    return new PartitionPageBreak();
   }
 
   json():any {
